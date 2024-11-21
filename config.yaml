@@ -1,0 +1,77 @@
+# paths
+tgt_root:  data/AR4/                      # root dir for data of tgt domain
+src_root:  data/src_new/                  # root dir for data of src domain
+ckpt_root: models/
+result_root: results/
+dataset: simu/                            # experiment type
+
+#logger options
+image_save_iter: 800           # How often do you want to save output images during training
+display_iter: 200              # How often do you want to display output images during training
+test_iter: 400                 # How often do you want to evaluate current model
+save_epoch: 25                 # How often do you want to save trained models
+log_iter: 25                   # How often do you want to log the training stats
+trainer: Trainer
+
+# training parameters
+max_epoch: 100                # maximum number of training epochs
+start_epoch: 0
+batch_size_src: 4             # batch size for src data
+batch_size_tgt: 4             # batch size for tgt data
+test_batch_size: 4            # test batch size for src and tgt data
+
+weight_decay: 0.00001         # weight decay
+beta1: 0.5                    # Adam parameter
+beta2: 0.999                  # Adam parameter
+init: kaiming                 # initialization [gaussian/kaiming/xavier/orthogonal]
+lr: 0.0001                    # initial learning rate
+
+lr_policy: cos_wp             # learning rate scheduler [step/cos_wp]
+# parameters for learning rate scheduler with cosine decay and warm-up
+lr_start: 0.5
+warm_up_iter: 10
+T_max: 100
+lr_max: 1
+lr_min: 0.1
+
+# trade-off weights for different objectives in loss
+loss_hyper:
+  ae: 10
+  estim: 10
+  gan_p: 1.0
+  gan_f: 0.1
+  cyc: 5
+
+  mixup: true                   # enable feature-level mixup or not
+  alpha: 1                      # 1 for random interpolation
+
+# model options
+enc:                          # for encoder
+  input_dim: 1
+  dim: 64
+  activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
+  out_activ: relu
+  n_downsample: 2             # number of downsampling layers in content encoder
+  n_res: 5                    # number of residual blocks in content encoder/decoder
+  pad_type: reflect           # padding type [zero/reflect]
+  norm_type: in
+
+dec:                          # for both decoder and predictor
+  input_dim: 256
+  output_dim: 1
+  activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
+  out_activ: relu
+  n_upsample: 2               # number of downsampling layers in content encoder
+  n_res: 5                    # number of residual blocks in content encoder/decoder
+  pad_type: reflect           # padding type [zero/reflect]
+  norm_type: in
+
+dis:                          # for both feature-level and pixel-level discriminators
+  dim: 64                     # number of filters in the bottommost layer
+  norm: in                    # normalization layer [none/bn/in/ln]
+  activ: lrelu                # activation function [relu/lrelu/prelu/selu/tanh]
+  n_layer: 3                  # number of layers in dis
+  gan_type: lsgan             # GAN loss [lsgan/nsgan]
+  num_scales: 1               # number of scales
+  pad_type: reflect           # padding type [zero/reflect]
+
