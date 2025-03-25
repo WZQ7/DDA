@@ -5,24 +5,20 @@ from trainer import Trainer
 from dataset import My_Dataset
 from utils import get_config
 
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--config', type=str, default='./config.yaml',
-                        help='Path to the config file.')
+config = get_config('./config.yaml')
 
-opts = parser.parse_args()
-config = get_config(opts.config)
-
-read_path = './data/'
-dataset_type = 'agar'
-example_index = 1  # choose a certain example image
 '''
 Option:
     1. digital : synthetic-to-synthetic study on digital phantoms, including 2 example images
     2. agar: synthetic-to-real study on agar phantoms, including 2 example images
     3. mouse: synthetic-to-real study on in vivo mice, including 2 example images
 '''
+dataset_type = 'digital'
+example_index = 1  # choose a certain example image: 1 or 2
+
 
 trainer = Trainer(config)
 trainer = trainer.to(device)
@@ -30,11 +26,11 @@ trainer = trainer.to(device)
 # load network parameters
 loadcp = True
 if loadcp:
-    checkpoint = torch.load(read_path + dataset_type + '/model/model.ckpt')
+    checkpoint = torch.load('./data/' + dataset_type + '/model/model.ckpt')
     trainer.enc.load_state_dict(checkpoint['enc'])
     trainer.pre.load_state_dict(checkpoint['pre'])
 
-test_tgt = My_Dataset(read_path + dataset_type + '/', src=False, train=False)
+test_tgt = My_Dataset('./data/' + dataset_type + '/', src=False, train=False)
 test_batch = 1  # Get one image by one iteration
 test_loader_tgt = torch.utils.data.DataLoader(test_tgt, batch_size=test_batch,
                                               shuffle=True, drop_last=True)

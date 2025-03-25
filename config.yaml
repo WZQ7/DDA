@@ -20,7 +20,7 @@ batch_size_src: 4             # batch size for src data
 batch_size_tgt: 4             # batch size for tgt data
 test_batch_size: 4            # test batch size for src and tgt data
 
-weight_decay: 0.00001         # weight decay
+weight_decay: 0.0001         # weight decay
 beta1: 0.5                    # Adam parameter
 beta2: 0.999                  # Adam parameter
 init: kaiming                 # initialization [gaussian/kaiming/xavier/orthogonal]
@@ -36,14 +36,10 @@ lr_min: 0.1
 
 # trade-off weights for different objectives in loss
 loss_hyper:
-  ae: 10
-  estim: 10
+  recon: 10.0
+  estim: 5.0
   gan_p: 1.0
   gan_f: 0.1
-  cyc: 5
-
-  mixup: true                   # enable feature-level mixup or not
-  alpha: 1                      # 1 for random interpolation
 
 # model options
 enc:                          # for encoder
@@ -52,7 +48,7 @@ enc:                          # for encoder
   activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
   out_activ: relu
   n_downsample: 2             # number of downsampling layers in content encoder
-  n_res: 5                    # number of residual blocks in content encoder/decoder
+  n_res: 4                    # number of residual blocks in content encoder/decoder
   pad_type: reflect           # padding type [zero/reflect]
   norm_type: in
 
@@ -62,9 +58,20 @@ dec:                          # for both decoder and predictor
   activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
   out_activ: relu
   n_upsample: 2               # number of downsampling layers in content encoder
-  n_res: 5                    # number of residual blocks in content encoder/decoder
+  n_res: 4                    # number of residual blocks in content encoder/decoder
   pad_type: reflect           # padding type [zero/reflect]
   norm_type: in
+
+gen:
+  input_dim: 256
+  output_dim: 1
+  activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
+  out_activ: tanh             # tanh must with max_norm or std_norm
+  n_upsample: 2             # number of downsampling layers in content encoder
+  n_res: 4                   # number of residual blocks in content encoder/decoder
+  pad_type: reflect           # padding type [zero/reflect]
+  norm_type: in
+
 
 dis:                          # for both feature-level and pixel-level discriminators
   dim: 64                     # number of filters in the bottommost layer
